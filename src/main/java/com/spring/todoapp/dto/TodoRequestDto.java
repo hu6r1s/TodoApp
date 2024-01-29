@@ -8,5 +8,4 @@ public class TodoRequestDto {
     private String content;
     private String author;
     private String password;
-//    private boolean isCompleted = false;
 }

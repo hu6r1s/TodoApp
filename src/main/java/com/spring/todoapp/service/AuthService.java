@@ -50,4 +50,14 @@ public class AuthService {
 
         return new AuthResponseDto(jwt, refreshToken);
     }
+
+    public AuthResponseDto refreshToken(RefreshTokenRequestDto requestDto) {
+        String username = jwtUtil.extractUsername(requestDto.getToken());
+        User user = userRepository.findByUsername(username).orElseThrow();
+        if (jwtUtil.isTokenValid(requestDto.getToken(), user)) {
+            var jwt = jwtUtil.generateToken(user);
+            return new AuthResponseDto(jwt, requestDto.getToken());
+        }
+        return null;
+    }
 }

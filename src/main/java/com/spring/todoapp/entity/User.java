@@ -1,5 +1,6 @@
 package com.spring.todoapp.entity;
 
+import com.spring.todoapp.dto.UserRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +28,11 @@ public class User extends Timestamped implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

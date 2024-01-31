@@ -1,5 +1,6 @@
 package com.spring.todoapp.controller;
 
+import com.spring.todoapp.dto.AuthResponseDto;
 import com.spring.todoapp.dto.UserRequestDto;
 import com.spring.todoapp.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody UserRequestDto requestDto) {
         return new ResponseEntity(authService.signup(requestDto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("login")
+    public ResponseEntity login(@RequestBody UserRequestDto requestDto) {
+        return new ResponseEntity(authService.login(requestDto), HttpStatus.OK);
     }
 }

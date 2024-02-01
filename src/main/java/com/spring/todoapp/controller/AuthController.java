@@ -1,9 +1,9 @@
 package com.spring.todoapp.controller;
 
-import com.spring.todoapp.dto.AuthResponseDto;
 import com.spring.todoapp.dto.RefreshTokenRequestDto;
 import com.spring.todoapp.dto.UserRequestDto;
 import com.spring.todoapp.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +25,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserRequestDto requestDto) {
-        return new ResponseEntity(authService.login(requestDto), HttpStatus.OK);
+    public ResponseEntity login(@RequestBody UserRequestDto requestDto, HttpServletResponse servletResponse) {
+        var response = authService.login(requestDto);
+
+        servletResponse.addHeader("Authorization", "Bearer " + response.getToken());
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     @PostMapping("/refresh")

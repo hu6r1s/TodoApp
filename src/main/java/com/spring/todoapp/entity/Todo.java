@@ -33,6 +33,9 @@ public class Todo extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "is_completed")
+    private boolean isCompleted = false;
+
     public Todo(TodoRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
@@ -46,5 +49,9 @@ public class Todo extends Timestamped {
         if (requestDto.getContent() != null) {
             this.content = requestDto.getContent();
         }
+    }
+
+    public void complete() {
+        this.isCompleted = true;
     }
 }

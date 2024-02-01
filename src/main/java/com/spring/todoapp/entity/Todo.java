@@ -1,6 +1,7 @@
 package com.spring.todoapp.entity;
 
 import com.spring.todoapp.dto.TodoRequestDto;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +26,7 @@ public class Todo extends Timestamped {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @ManyToOne
@@ -38,7 +40,11 @@ public class Todo extends Timestamped {
     }
 
     public void update(TodoRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
+        if (requestDto.getTitle() != null) {
+            this.title = requestDto.getTitle();
+        }
+        if (requestDto.getContent() != null) {
+            this.content = requestDto.getContent();
+        }
     }
 }

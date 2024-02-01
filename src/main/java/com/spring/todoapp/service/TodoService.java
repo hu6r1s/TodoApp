@@ -39,12 +39,12 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponseDto update(Long id, TodoRequestDto requestDto) {
+    public TodoResponseDto update(Long id, TodoRequestDto requestDto, UserDetails userDetails) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
-//        if (!todo.getPassword().equals(requestDto.getPassword())) {
-//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-//        }
+        if (!userDetails.getUsername().equals(todo.getUser())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
         todo.update(requestDto);
         return new TodoResponseDto(todo);
     }
@@ -52,9 +52,6 @@ public class TodoService {
     @Transactional
     public TodoResponseDto delete(Long id, String password) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
-//        if (!todo.getPassword().equals(password)) {
-//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-//        }
 
         todoRepository.delete(todo);
 

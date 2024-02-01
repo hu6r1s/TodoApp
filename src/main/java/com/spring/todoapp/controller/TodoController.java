@@ -38,8 +38,12 @@ public class TodoController {
     }
 
     @PatchMapping("/{id}")
-    public TodoResponseDto update(@PathVariable Long id, @RequestBody TodoRequestDto requestDto) {
-        return todoService.update(id, requestDto);
+    public TodoResponseDto update(
+            @PathVariable Long id,
+            @RequestBody TodoRequestDto requestDto,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return todoService.update(id, requestDto, userDetails);
     }
 
     @DeleteMapping("/{id}")

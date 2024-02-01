@@ -38,11 +38,21 @@ public class CommentService {
     public CommentResponseDto update(Long id, CommentRequestDto requestDto, UserDetails userDetails) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 ID입니다."));
 
+        if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
         comment.update(requestDto);
         return new CommentResponseDto(comment);
     }
 
+    @Transactional
     public CommentResponseDto delete(Long id, UserDetails userDetails) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
+        if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
+        commentRepository.delete(comment);
+        return new CommentResponseDto(comment);
     }
 }

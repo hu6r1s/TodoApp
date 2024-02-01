@@ -37,4 +37,12 @@ public class CommentController {
     ) {
         return commentService.update(id, requestDto, userDetails);
     }
+
+    @DeleteMapping("/{id}")
+    public CommentResponseDto delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return commentService.delete(id, userDetails);
+    }
 }

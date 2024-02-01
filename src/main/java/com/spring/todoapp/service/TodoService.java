@@ -50,11 +50,14 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponseDto delete(Long id, String password) {
+    public TodoResponseDto delete(Long id, UserDetails userDetails) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
-        todoRepository.delete(todo);
+        if (!userDetails.getUsername().equals(todo.getUser())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
 
+        todoRepository.delete(todo);
         return new TodoResponseDto(todo);
     }
 }

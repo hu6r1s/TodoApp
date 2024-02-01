@@ -47,7 +47,10 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public TodoResponseDto delete(@PathVariable Long id, @RequestBody String password) {
-        return todoService.delete(id, password);
+    public TodoResponseDto delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return todoService.delete(id, userDetails);
     }
 }

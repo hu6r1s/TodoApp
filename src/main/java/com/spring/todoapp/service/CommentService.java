@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class CommentService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public CommentResponseDto create(Long todoId, CommentRequestDto requestDto, UserDetails userDetails) {
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 ID입니다."));
 
@@ -30,5 +32,17 @@ public class CommentService {
         commentRepository.save(comment);
 
         return new CommentResponseDto(comment);
+    }
+
+    @Transactional
+    public CommentResponseDto update(Long id, CommentRequestDto requestDto, UserDetails userDetails) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 ID입니다."));
+
+        comment.update(requestDto);
+        return new CommentResponseDto(comment);
+    }
+
+    public CommentResponseDto delete(Long id, UserDetails userDetails) {
+
     }
 }

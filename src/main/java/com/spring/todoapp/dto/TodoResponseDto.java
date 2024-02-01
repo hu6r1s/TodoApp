@@ -1,6 +1,7 @@
 package com.spring.todoapp.dto;
 
 import com.spring.todoapp.entity.Todo;
+import com.spring.todoapp.entity.User;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -18,7 +19,7 @@ public class TodoResponseDto {
         this.id = todo.getId();
         this.title = todo.getTitle();
         this.content = todo.getContent();
-        this.author = todo.getAuthor();
+        this.author = todo.getUser().getUsername();
         this.createdAt = todo.getCreatedAt();
         this.modifiedAt = todo.getModifiedAt();
     }

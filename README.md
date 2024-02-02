@@ -64,3 +64,18 @@ API with authentication, authorization and comment functions
     - 토큰이 있고, 유효한 토큰이지만 해당 사용자가 작성한 게시글/댓글이 아닌 경우에는 “작성자만 삭제/수정할 수 있습니다.”라는 에러메시지와 statusCode: 400을 Client에 반환하기
     - DB에 이미 존재하는 username으로 회원가입을 요청한 경우 "중복된 username 입니다." 라는 에러메시지와 statusCode: 400을 Client에 반환하기
     - 로그인 시, 전달된 username과 password 중 맞지 않는 정보가 있다면 "회원을 찾을 수 없습니다."라는 에러메시지와 statusCode: 400을 Client에 반환하기
+
+## 추가 요구사항
+- [x] 전체 할일카드 목록에서 완료된 카드들은 숨김처리 하는 기능을 추가해주세요!
+- [x] 할일카드를 작성자만 볼 수 있도록 비공개 하는 기능을 추가해주세요!
+- [x] 할일카드 제목으로 검색하여 목록을 출력하는 기능을 추가해주세요!
+- [ ] AccessToken, RefreshToken에 대해 구글링해 보고 RefreshToken을 적용해 보세요!
+- [x] 프로젝트에 swagger 를 구글링해 보고 적용해 보세요!
+
+## ERD 다이어그램
+![image](https://github.com/hu6r1s/TodoApp/assets/67190090/a8ba27db-727e-4543-8285-d8b63210ab4e)
+
+## API 명세서
+![image](https://github.com/hu6r1s/TodoApp/assets/67190090/dc0dbd7f-ff8d-41de-9502-eaa8f220e31e)
+![image](https://github.com/hu6r1s/TodoApp/assets/67190090/7d7acd1c-0fed-431d-b088-8daa976352b0)
+

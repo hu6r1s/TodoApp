@@ -44,10 +44,21 @@ public class TodoService {
 
     public TodoResponseDto findById(Long id, UserDetails userDetails) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
-        if (!userDetails.equals(todo.getUser().getUsername()) || todo.isHide()) {
+        if (!userDetails.getUsername().equals(todo.getUser().getUsername()) || todo.isHide()) {
             throw new IllegalArgumentException("비공개인 카드이거나, 작성자가 일치하지 않습니다.");
         }
         return new TodoResponseDto(todo);
+    }
+
+    public List<TodoResponseDto> findAllByTitle(String title, UserDetails userDetails) {
+        List<Todo> todoList = todoRepository.findAllByTitleContaining(title);
+        List<TodoResponseDto> responseList = new ArrayList<>();
+        for (Todo todo : todoList) {
+            if (userDetails.getUsername().equals(todo.getUser().getUsername()) || !todo.isHide()) {
+                responseList.add(new TodoResponseDto(todo));
+            }
+        }
+        return responseList;
     }
 
     @Transactional

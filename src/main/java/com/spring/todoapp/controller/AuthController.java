@@ -4,6 +4,8 @@ import com.spring.todoapp.common.exception.ExceptionResponse;
 import com.spring.todoapp.dto.RefreshTokenRequestDto;
 import com.spring.todoapp.dto.UserRequestDto;
 import com.spring.todoapp.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
@@ -22,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Auth", description = "Auth Controller")
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입", description = "유저를 생성한다.")
     public ResponseEntity signup(@RequestBody @Valid UserRequestDto requestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();

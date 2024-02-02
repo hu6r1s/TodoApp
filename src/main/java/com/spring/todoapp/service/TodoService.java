@@ -7,6 +7,7 @@ import com.spring.todoapp.entity.Todo;
 import com.spring.todoapp.entity.User;
 import com.spring.todoapp.repository.TodoRepository;
 import com.spring.todoapp.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,22 @@ public class TodoService {
         return new TodoResponseDto(todo);
     }
 
-    public List<TodoResponseDto> findAll() {
-        return todoRepository.findAllByIsCompletedFalseOrderByCreatedAtDesc().stream().map(TodoResponseDto::new).toList();
+    public List<TodoResponseDto> findAll(UserDetails userDetails) {
+        List<Todo> todoList = todoRepository.findAllByIsCompletedFalseOrderByCreatedAtDesc();
+        List<TodoResponseDto> responseList = new ArrayList<>();
+        for (Todo todo : todoList) {
+            if (userDetails.getUsername().equals(todo.getUser().getUsername()) || !todo.isHide()) {
+                responseList.add(new TodoResponseDto(todo));
+            }
+        }
+        return responseList;
     }
 
-    public TodoResponseDto findById(Long id) {
+    public TodoResponseDto findById(Long id, UserDetails userDetails) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
+        if (!userDetails.equals(todo.getUser().getUsername()) || todo.isHide()) {
+            throw new IllegalArgumentException("비공개인 카드이거나, 작성자가 일치하지 않습니다.");
+        }
         return new TodoResponseDto(todo);
     }
 

@@ -14,6 +14,7 @@ public class TodoResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private boolean isCompleted;
+    private boolean isHide;
 
 
     public TodoResponseDto(Todo todo) {
@@ -24,5 +25,6 @@ public class TodoResponseDto {
         this.createdAt = todo.getCreatedAt();
         this.modifiedAt = todo.getModifiedAt();
         this.isCompleted = todo.isCompleted();
+        this.isHide = todo.isHide();
     }
 }

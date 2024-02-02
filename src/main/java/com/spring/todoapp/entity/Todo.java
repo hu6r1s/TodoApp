@@ -36,6 +36,9 @@ public class Todo extends Timestamped {
     @Column(name = "is_completed")
     private boolean isCompleted = false;
 
+    @Column(name = "is_hide")
+    private boolean isHide;
+
     public Todo(TodoRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();

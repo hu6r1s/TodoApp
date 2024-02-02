@@ -7,4 +7,5 @@ import lombok.Getter;
 public class TodoRequestDto {
     private String title;
     private String content;
+    private boolean isHide;
 }

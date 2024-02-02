@@ -28,13 +28,13 @@ public class TodoController {
     }
 
     @GetMapping("/")
-    public List<TodoResponseDto> findAll() {
-        return todoService.findAll();
+    public List<TodoResponseDto> findAll(@AuthenticationPrincipal UserDetails userDetails) {
+        return todoService.findAll(userDetails);
     }
 
     @GetMapping("/{id}")
-    public TodoResponseDto findById(@PathVariable Long id) {
-        return todoService.findById(id);
+    public TodoResponseDto findById(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        return todoService.findById(id, userDetails);
     }
 
     @PatchMapping("/{id}")

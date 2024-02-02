@@ -31,7 +31,7 @@ public class TodoService {
     }
 
     public List<TodoResponseDto> findAll() {
-        return todoRepository.findAllByOrderByCreatedAtDesc().stream().map(TodoResponseDto::new).toList();
+        return todoRepository.findAllByIsCompletedFalseOrderByCreatedAtDesc().stream().map(TodoResponseDto::new).toList();
     }
 
     public TodoResponseDto findById(Long id) {

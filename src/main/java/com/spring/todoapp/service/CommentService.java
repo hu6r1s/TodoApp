@@ -1,5 +1,6 @@
 package com.spring.todoapp.service;
 
+import com.spring.todoapp.common.exception.NotCreatedUserException;
 import com.spring.todoapp.dto.CommentRequestDto;
 import com.spring.todoapp.dto.CommentResponseDto;
 import com.spring.todoapp.entity.Comment;
@@ -39,7 +40,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 ID입니다."));
 
         if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
-            throw new IllegalArgumentException("작성자가 아닙니다.");
+            throw new NotCreatedUserException();
         }
         comment.update(requestDto);
         return new CommentResponseDto(comment);
@@ -50,7 +51,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
         if (!comment.getUser().getUsername().equals(userDetails.getUsername())) {
-            throw new IllegalArgumentException("작성자가 아닙니다.");
+            throw new NotCreatedUserException();
         }
         commentRepository.delete(comment);
         return new CommentResponseDto(comment);

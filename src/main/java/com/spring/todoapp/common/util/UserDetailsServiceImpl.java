@@ -1,5 +1,6 @@
 package com.spring.todoapp.common.util;
 
+import com.spring.todoapp.entity.User;
 import com.spring.todoapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,17 +10,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByUsername(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            }
-        };
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Not Found " + username));
+
+        return new UserDetailsImpl(user);
     }
 }

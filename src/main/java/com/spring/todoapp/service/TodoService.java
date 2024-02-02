@@ -1,5 +1,6 @@
 package com.spring.todoapp.service;
 
+import com.spring.todoapp.common.exception.NotCreatedUserException;
 import com.spring.todoapp.dto.TodoRequestDto;
 import com.spring.todoapp.dto.TodoResponseDto;
 import com.spring.todoapp.entity.Todo;
@@ -23,7 +24,7 @@ public class TodoService {
     @Transactional
     public TodoResponseDto create(TodoRequestDto requestDto, UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
-                new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+                new UsernameNotFoundException("회원을 찾을 수 없습니다."));
         Todo todo = new Todo(requestDto, user);
         todoRepository.save(todo);
         return new TodoResponseDto(todo);
@@ -43,7 +44,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
         if (!userDetails.getUsername().equals(todo.getUser().getUsername())) {
-            throw new IllegalArgumentException("작성자가 아닙니다.");
+            throw new NotCreatedUserException();
         }
         todo.update(requestDto);
         return new TodoResponseDto(todo);
@@ -54,7 +55,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
         if (!userDetails.getUsername().equals(todo.getUser().getUsername())) {
-            throw new IllegalArgumentException("작성자가 아닙니다.");
+            throw new NotCreatedUserException();
         }
 
         todoRepository.delete(todo);
@@ -66,7 +67,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NullPointerException("해당하는 ID가 없습니다."));
 
         if (!userDetails.getUsername().equals(todo.getUser().getUsername())) {
-            throw new IllegalArgumentException("작성자가 아닙니다.");
+            throw new NotCreatedUserException();
         }
 
         todo.complete();

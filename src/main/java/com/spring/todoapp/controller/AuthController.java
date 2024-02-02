@@ -24,16 +24,8 @@ public class AuthController {
         return new ResponseEntity(authService.signup(requestDto), HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserRequestDto requestDto, HttpServletResponse servletResponse) {
-        var response = authService.login(requestDto);
-
-        servletResponse.addHeader("Authorization", "Bearer " + response.getToken());
-        return new ResponseEntity(response, HttpStatus.OK);
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity refresh(@RequestBody RefreshTokenRequestDto requestDto) {
-        return new ResponseEntity(authService.refreshToken(requestDto), HttpStatus.OK);
-    }
+//    @PostMapping("/refresh")
+//    public ResponseEntity refresh(@RequestBody RefreshTokenRequestDto requestDto) {
+//        return new ResponseEntity(authService.refreshToken(requestDto), HttpStatus.OK);
+//    }
 }

@@ -2,17 +2,13 @@ package com.spring.todoapp.service;
 
 import com.spring.todoapp.common.exception.DuplicatedUserException;
 import com.spring.todoapp.common.util.JwtUtil;
-import com.spring.todoapp.dto.AuthResponseDto;
-import com.spring.todoapp.dto.RefreshTokenRequestDto;
 import com.spring.todoapp.dto.UserRequestDto;
 import com.spring.todoapp.dto.UserResponseDto;
 import com.spring.todoapp.entity.User;
 import com.spring.todoapp.repository.UserRepository;
-import java.util.HashMap;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +34,4 @@ public class AuthService {
         userRepository.save(user);
         return new UserResponseDto(user);
     }
-
-//    public AuthResponseDto refreshToken(RefreshTokenRequestDto requestDto) {
-//        return null;
-//    }
 }

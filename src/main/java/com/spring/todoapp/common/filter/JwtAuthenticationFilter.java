@@ -5,6 +5,9 @@ import com.spring.todoapp.common.util.JwtUtil;
 import com.spring.todoapp.common.util.UserDetailsImpl;
 import com.spring.todoapp.dto.AuthResponseDto;
 import com.spring.todoapp.dto.UserRequestDto;
+import com.spring.todoapp.entity.RefreshToken;
+import com.spring.todoapp.entity.User;
+import com.spring.todoapp.repository.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,11 +24,15 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     ObjectMapper objectMapper = new ObjectMapper();
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
+        this.refreshTokenRepository = refreshTokenRepository;
         setFilterProcessesUrl("/api/v1/auth/login");
     }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -48,10 +55,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException {
-        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        User user = ((UserDetailsImpl) authResult.getPrincipal()).getUser();
 
-        String token = jwtUtil.createToken(username);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        String accessToken = jwtUtil.createAccessToken(user.getUsername());
+        String refreshToken = jwtUtil.createRefreshToken(user.getUsername()).substring(7);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        refreshTokenRepository.save(new RefreshToken(refreshToken, user));
 
         response.setStatus(HttpServletResponse.SC_OK);
 

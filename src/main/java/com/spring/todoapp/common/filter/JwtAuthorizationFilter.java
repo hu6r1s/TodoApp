@@ -1,13 +1,19 @@
 package com.spring.todoapp.common.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.todoapp.common.util.JwtUtil;
+import com.spring.todoapp.common.util.UserDetailsImpl;
 import com.spring.todoapp.common.util.UserDetailsServiceImpl;
+import com.spring.todoapp.dto.AuthResponseDto;
+import com.spring.todoapp.entity.RefreshToken;
+import com.spring.todoapp.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -23,10 +29,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    ObjectMapper objectMapper = new ObjectMapper();
+
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
@@ -35,8 +45,43 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
         if (StringUtils.hasText(tokenValue)) {
+            int tokenStatus = jwtUtil.validateToken(tokenValue);
 
-            if (!jwtUtil.validateToken(tokenValue)) {
+            if (tokenStatus == 1) {
+                try {
+                    Claims info = jwtUtil.getUserInfoFromExpriedToken(tokenValue);
+                    UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(
+                            info.getSubject());
+                    RefreshToken refreshToken = refreshTokenRepository.findByUserId(userDetails.getUser().getId());
+                    if (refreshToken != null && jwtUtil.validateToken(refreshToken.getRefreshToken()) == 0) {
+                        String newAccessToken = jwtUtil.createAccessToken(info.getSubject());
+                        res.addHeader(jwtUtil.AUTHORIZATION_HEADER, newAccessToken);
+
+                        res.setStatus(HttpServletResponse.SC_OK);
+
+                        String jsonResponse = objectMapper.writeValueAsString(new AuthResponseDto("새로운 Acces Token이 발급되었습니다.", HttpStatus.OK, res.getStatus()));
+
+                        res.setContentType("application/json");
+                        res.setCharacterEncoding("UTF-8");
+                        res.getWriter().write(jsonResponse);
+                        return;
+                    } else {
+                        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+                        String jsonResponse = objectMapper.writeValueAsString(new AuthResponseDto("Access Token과 Refresh Token이 모두 만료되었습니다.", HttpStatus.UNAUTHORIZED, res.getStatus()));
+                        refreshTokenRepository.delete(refreshToken);
+
+                        res.setContentType("application/json");
+                        res.setCharacterEncoding("UTF-8");
+                        res.getWriter().write(jsonResponse);
+                        return;
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    return;
+                }
+            }
+            else if (tokenStatus == 2) {
                 log.error("Token Error");
                 return;
             }

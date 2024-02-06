@@ -2,9 +2,11 @@ package com.spring.todoapp.common.util;
 
 import com.spring.todoapp.entity.User;
 import java.util.Collection;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;

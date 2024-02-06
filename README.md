@@ -69,7 +69,7 @@ API with authentication, authorization and comment functions
 - [x] 전체 할일카드 목록에서 완료된 카드들은 숨김처리 하는 기능을 추가해주세요!
 - [x] 할일카드를 작성자만 볼 수 있도록 비공개 하는 기능을 추가해주세요!
 - [x] 할일카드 제목으로 검색하여 목록을 출력하는 기능을 추가해주세요!
-- [ ] AccessToken, RefreshToken에 대해 구글링해 보고 RefreshToken을 적용해 보세요!
+- [x] AccessToken, RefreshToken에 대해 구글링해 보고 RefreshToken을 적용해 보세요!
 - [x] 프로젝트에 swagger 를 구글링해 보고 적용해 보세요!
 
 ## ERD 다이어그램
